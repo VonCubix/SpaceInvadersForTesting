@@ -96,7 +96,7 @@ public class FXMLDocumentController implements Initializable {
 
     //Enemy Projectile Management
     public int projectile_enemy_count = 0;
-    final float PROJECTILE_COOLDOWN_ENEMY = 3.0f;
+    final float PROJECTILE_COOLDOWN_ENEMY = 1.5f;
     float nextEnemyProjectileTime = 2.0f;
     boolean[] ifRowIsFull = new boolean[8];
     boolean isReadyToFire = true;
@@ -109,10 +109,10 @@ public class FXMLDocumentController implements Initializable {
     public boolean gameWon = false;
     public boolean gameLost = false;
 
-    public int spaceship_Life = 3;
+    public int spaceship_Life = 3; 
 
-    public int dead_enemies = 0;
-
+    public int dead_enemies = 0; 
+    
     public void addToPane(Node node) {
         pane.getChildren().add(node);
     }
@@ -123,8 +123,8 @@ public class FXMLDocumentController implements Initializable {
 
     //This method is called when the player wins
     public void victory() throws Exception {
-        try {
-     
+        try 
+        {
             paneVictory.setBackground(AssetManager.getBackgroundImageVictory());
             paneVictory.setVisible(true);
             buttonCloseVic.setDisable(false);
@@ -135,8 +135,8 @@ public class FXMLDocumentController implements Initializable {
     }
 
     public void defeat() throws Exception {
-        try {         
-            
+        try 
+        {         
             paneDefeat.setBackground(AssetManager.getBackgroundImageVictory());
             paneDefeat.setVisible(true);
             buttonCloseDef.setDisable(false);
@@ -225,7 +225,6 @@ public class FXMLDocumentController implements Initializable {
                     if (enemies[i][j] != null && enemies[i + 1][j] == null) {
 
                         readyToShootAliens_x_y.add(new Point2D.Double(i, j));
-
                     }
 
                 }
@@ -233,6 +232,11 @@ public class FXMLDocumentController implements Initializable {
             Random rand = new Random();
             int random_enemy = rand.nextInt(readyToShootAliens_x_y.size());
 
+            while (readyToShootAliens_x_y.get(random_enemy) == null)
+            {
+                random_enemy = rand.nextInt(readyToShootAliens_x_y.size());
+            }
+            
             double prj_posX = enemies[(int) readyToShootAliens_x_y.get(random_enemy).getX()][(int) readyToShootAliens_x_y.get(random_enemy).getY()].getPosition().getX() + 25;
             double prj_posY = enemies[(int) readyToShootAliens_x_y.get(random_enemy).getX()][(int) readyToShootAliens_x_y.get(random_enemy).getY()].getPosition().getY() + 5;
 
@@ -322,9 +326,8 @@ public class FXMLDocumentController implements Initializable {
         for (int i = 0; i < 4; i++) {
             x_pos = 10;
             y_pos += 80;
-            for (int j = 0; j < 8; j++) {
-
-                enemies[i][j] = new Enemies(new Vector2D(x_pos += 70, y_pos), new Vector2D(20, 0), 40, 40, i);
+            for (int j = 0; j < 8; j++) {                                           //---------------------------------------
+                    enemies[i][j] = new Enemies(new Vector2D(x_pos += 70, y_pos), new Vector2D(20, 0), 40, 40, i);
             }
         }
 
@@ -343,7 +346,8 @@ public class FXMLDocumentController implements Initializable {
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 8; j++) {
-                addToPane(enemies[i][j].getRectangle());
+                if (enemies[i][j] != null)
+                    addToPane(enemies[i][j].getRectangle());
             }
         }
 
@@ -376,7 +380,8 @@ public class FXMLDocumentController implements Initializable {
                 nextEnemyProjectileTime -= frameDeltaTime;
 
                 for (GameObject obj : objectList) {
-                    obj.update(frameDeltaTime);
+                    if (obj != null)                //---------------------------------------
+                        obj.update(frameDeltaTime);
                 }
 
                 //Animate Enemy Movement
@@ -385,7 +390,7 @@ public class FXMLDocumentController implements Initializable {
                         for (int i = 0; i < 4; i++) {
                             for (int j = 0; j < 8; j++) {
                                 if (enemies[i][j] != null) {
-                                    enemies[i][j].setPosition(new Vector2D(enemies[i][j].getPosition().getX(), enemies[i][j].getPosition().getY()+5));
+                                    enemies[i][j].setPosition(new Vector2D(enemies[i][j].getPosition().getX(), enemies[i][j].getPosition().getY()+5)); //-------------------------------
                                     enemies[i][j].setVelocity(new Vector2D(-30, 0));
                                 }
                             }
@@ -396,7 +401,7 @@ public class FXMLDocumentController implements Initializable {
                             for (int j = 0; j < 8; j++) {
                                 if(enemies[i][j] != null)
                                 {
-                                    enemies[i][j].setPosition(new Vector2D(enemies[i][j].getPosition().getX(), enemies[i][j].getPosition().getY()+5));
+                                    enemies[i][j].setPosition(new Vector2D(enemies[i][j].getPosition().getX(), enemies[i][j].getPosition().getY()+5)); //-------------------------------
                                     enemies[i][j].setVelocity(new Vector2D(30, 0));
                                 }                            
                             }
@@ -408,9 +413,7 @@ public class FXMLDocumentController implements Initializable {
 
                 //Make Enemy shoot
                 if (nextEnemyProjectileTime <= 0.0f) {
-
                     enemyShoot();
-
                 }
 
                 //Collison Shield/Projectile            
@@ -462,8 +465,7 @@ public class FXMLDocumentController implements Initializable {
                                     AssetManager.getEnnemyHitSound2().play();
 
                                     dead_enemies++;
-                                    labelScore.setText("Score: " + dead_enemies);
-                                    System.out.println("" + dead_enemies);
+                                    labelScore.setText("Score: " + dead_enemies);                                    
 
                                     pane.getChildren().remove(projectiles.get(i).getRectangle());
                                     projectiles.remove(i);
@@ -471,10 +473,17 @@ public class FXMLDocumentController implements Initializable {
                                     //Detect If You Win                                 
                                     if (dead_enemies >= 32) {
                                         try {
-                                            this.stop();
-                                            victory();
-                                            
-                                        } catch (Exception ex) {
+                                            for (int l = 0; l < objectList.size(); l++) {
+                                                if (objectList.get(j) != null)
+                                                {
+                                                    pane.getChildren().remove(objectList.get(l).getRectangle());
+                                                }
+                                            }
+                                        this.stop();
+                                        victory();
+                                        }
+                                        catch (Exception ex) 
+                                        {
                                             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
                                         }
                                     }
@@ -529,10 +538,13 @@ public class FXMLDocumentController implements Initializable {
                         Bounds enemy_rec_Bounds = enemy_rec.getBoundsInParent();
 
                         if (prj_rec_Bounds.intersects(enemy_rec_Bounds)) {
-
+                            
+                            AssetManager.getSpaceShipHitSound().play();
+                            /*
                             pane.getChildren().remove(SpaceShip.getRectangle());
                             SpaceShip = null;
-
+                            */
+                            
                             //Decrease lives
                             spaceship_Life--;
 
@@ -559,7 +571,7 @@ public class FXMLDocumentController implements Initializable {
                                 try {
                                     
                                     defeat();
-                                    
+                                    /*
                                     for (int j = 0; j < 4; j++) {
                                         for (int k = 0; k < 8; k++) {
                                             
@@ -577,12 +589,12 @@ public class FXMLDocumentController implements Initializable {
                                     SpaceShip = null;
                                     
                                     pane.getChildren().remove(SpaceShip.getRectangle());
-                                    
-                                    for (int j = 0; j < objectList.size(); j++) {
-                                        //removeFromPane(objectList.get(j));
-                                        pane.getChildren().removeAll(objectList);
-                                        //pane.getChildren().remove(objectList.get(j));                                        
-                                        
+                                    */
+                                    for (int j = 0; j < objectList.size(); j++) {                                        
+                                        if (objectList.get(j) != null)
+                                        {
+                                            pane.getChildren().remove(objectList.get(j).getRectangle());
+                                        }
                                     }
                                     
                                     this.stop();

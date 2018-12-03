@@ -34,10 +34,12 @@ public class AssetManager {
     static private ImagePattern explosion;      
     static private ImagePattern heart;
     
+    
     static private Media backgroundMusic = null;
     static private AudioClip ennemyHitSound = null;
     static private AudioClip ennemyHitSound2 = null;
     static private AudioClip shootingSound = null;
+    static private AudioClip spaceShipHitSound = null;
     
     static private String fileURL(String relativePath)
     {
@@ -89,6 +91,7 @@ public class AssetManager {
         shootingSound = new AudioClip(fileURL("./assets/soundfx/Laser_Gun.mp3"));
         ennemyHitSound = new AudioClip(fileURL("./assets/soundfx/hit.mp3"));
         ennemyHitSound2 = new AudioClip(fileURL("./assets/soundfx/HIT_Ennemy.mp3"));
+        spaceShipHitSound = new AudioClip(fileURL("./assets/soundfx/impact_with_spaceship.mp3"));
         
         
     }
@@ -120,6 +123,10 @@ public class AssetManager {
     static public Background getBackgroundImageVictory()
     {
         return backgroundImage_Victory;
+    }
+    
+    public static AudioClip getSpaceShipHitSound() {
+        return spaceShipHitSound;
     }
     
     static public ImagePattern getSpecificEnnemy(int levelOfEnnemy)
