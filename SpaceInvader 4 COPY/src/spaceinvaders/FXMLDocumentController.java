@@ -229,6 +229,7 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             }
+            try{
             Random rand = new Random();
             int random_enemy = rand.nextInt(readyToShootAliens_x_y.size());
 
@@ -239,6 +240,7 @@ public class FXMLDocumentController implements Initializable {
             
             double prj_posX = enemies[(int) readyToShootAliens_x_y.get(random_enemy).getX()][(int) readyToShootAliens_x_y.get(random_enemy).getY()].getPosition().getX() + 25;
             double prj_posY = enemies[(int) readyToShootAliens_x_y.get(random_enemy).getX()][(int) readyToShootAliens_x_y.get(random_enemy).getY()].getPosition().getY() + 5;
+            
 
             //Center the Projectile
             Vector2D init_position = new Vector2D(prj_posX, prj_posY);
@@ -248,9 +250,9 @@ public class FXMLDocumentController implements Initializable {
             projectiles_enemy.add(new ProjectileEnemy(init_position, velocity, 10, 30));
             addToPane(projectiles_enemy.get(projectile_enemy_count).getRectangle());
             objectList.add(projectiles_enemy.get(projectile_enemy_count));
-
+            }
+            catch(Exception e){}
         }
-
     }
 
     @FXML
@@ -326,7 +328,7 @@ public class FXMLDocumentController implements Initializable {
         for (int i = 0; i < 4; i++) {
             x_pos = 10;
             y_pos += 80;
-            for (int j = 0; j < 8; j++) {                                           //---------------------------------------
+            for (int j = 0; j < 8; j++) {                                         
                     enemies[i][j] = new Enemies(new Vector2D(x_pos += 70, y_pos), new Vector2D(20, 0), 40, 40, i);
             }
         }
@@ -540,10 +542,10 @@ public class FXMLDocumentController implements Initializable {
                         if (prj_rec_Bounds.intersects(enemy_rec_Bounds)) {
                             
                             AssetManager.getSpaceShipHitSound().play();
-                            /*
+                            
                             pane.getChildren().remove(SpaceShip.getRectangle());
                             SpaceShip = null;
-                            */
+                            
                             
                             //Decrease lives
                             spaceship_Life--;
@@ -608,13 +610,9 @@ public class FXMLDocumentController implements Initializable {
                             pane.getChildren().remove(projectiles_enemy.get(i).getRectangle());
                             projectiles_enemy.remove(i);
                         }
-
                     }
-
                 }
-
             }
-
         }.start();
     }
 }
